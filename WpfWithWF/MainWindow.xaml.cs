@@ -89,7 +89,7 @@ namespace WpfWithWF
                 {
                     foreach (string item in output.First())
                     {
-                        this.txbOutput.Text += item;
+                        this.txbOutput.Text += item + "\r\n";
                     }
                 });
             }
@@ -136,6 +136,11 @@ namespace WpfWithWF
         {
             EventArgs args = new EventArgs();
             workflow.ResumeBookmark("Execution", "anything");
+        }
+
+        private void btnClear_Click(object sender, RoutedEventArgs e)
+        {
+            this.txbOutput.Text = string.Empty;
         }
 
 

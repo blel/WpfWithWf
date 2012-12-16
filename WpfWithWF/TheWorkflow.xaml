@@ -59,6 +59,17 @@
                 </Variable.Default>
               </Variable>
             </Sequence.Variables>
+            <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;">
+              <AddToCollection.Item>
+                <InArgument x:TypeArguments="x:String">
+                  <mca:CSharpValue x:TypeArguments="x:String">string.Format("For project {0} you must do the following:", ProjectInfo.ProjectName)</mca:CSharpValue>
+                </InArgument>
+              </AddToCollection.Item>
+              <InArgument x:TypeArguments="scg:ICollection(x:String)">
+                <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tempCol</mca:CSharpValue>
+              </InArgument>
+              <sap2010:WorkflowViewState.IdRef>AddToCollection`1_6</sap2010:WorkflowViewState.IdRef>
+            </AddToCollection>
             <ForEach x:TypeArguments="local:ApplicationData" DisplayName="ForEach&lt;ApplicationData&gt;" sap2010:WorkflowViewState.IdRef="ForEach`1_1">
               <ForEach.Values>
                 <InArgument x:TypeArguments="scg:IEnumerable(local:ApplicationData)">
@@ -79,7 +90,7 @@
                     <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" sap2010:WorkflowViewState.IdRef="AddToCollection`1_5">
                       <AddToCollection.Item>
                         <InArgument x:TypeArguments="x:String">
-                          <mca:CSharpValue x:TypeArguments="x:String">string.Format("Since the application {0} is new, you must contact the Head of FIS to nominate a new AOR.", item.NewApplication)</mca:CSharpValue>
+                          <mca:CSharpValue x:TypeArguments="x:String">string.Format("Since the application {0} is new, you must contact the Head of FIS to nominate a new AOR.", item.ApplicationName)</mca:CSharpValue>
                         </InArgument>
                       </AddToCollection.Item>
                       <InArgument x:TypeArguments="scg:ICollection(x:String)">
@@ -88,7 +99,12 @@
                     </AddToCollection>
                   </If.Then>
                   <If.Else>
-                    <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" sap2010:WorkflowViewState.IdRef="AddToCollection`1_2" Item="another test">
+                    <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" sap2010:WorkflowViewState.IdRef="AddToCollection`1_2">
+                      <AddToCollection.Item>
+                        <InArgument x:TypeArguments="x:String">
+                          <mca:CSharpValue x:TypeArguments="x:String">string.Format("Please contact the AOR for the application {0}.", item.ApplicationName)</mca:CSharpValue>
+                        </InArgument>
+                      </AddToCollection.Item>
                       <InArgument x:TypeArguments="scg:ICollection(x:String)">
                         <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tempCol</mca:CSharpValue>
                       </InArgument>
@@ -97,13 +113,18 @@
                 </If>
               </ActivityAction>
             </ForEach>
-            <local:AssignToExtension>
+            <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" Item="Please include all AORs during the project team-meetings.">
+              <InArgument x:TypeArguments="scg:ICollection(x:String)">
+                <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tempCol</mca:CSharpValue>
+              </InArgument>
+              <sap2010:WorkflowViewState.IdRef>AddToCollection`1_7</sap2010:WorkflowViewState.IdRef>
+            </AddToCollection>
+            <local:AssignToExtension sap2010:WorkflowViewState.IdRef="AssignToExtension_1">
               <local:AssignToExtension.Text>
                 <InArgument x:TypeArguments="scg:List(x:String)">
                   <mca:CSharpValue x:TypeArguments="scg:List(x:String)">tempCol</mca:CSharpValue>
                 </InArgument>
               </local:AssignToExtension.Text>
-              <sap2010:WorkflowViewState.IdRef>AssignToExtension_1</sap2010:WorkflowViewState.IdRef>
             </local:AssignToExtension>
           </Sequence>
         </State.Entry>
@@ -139,16 +160,18 @@
     <x:Reference>__ReferenceID1</x:Reference>
     <x:Reference>__ReferenceID2</x:Reference>
     <x:Reference>__ReferenceID3</x:Reference>
-    <sads:DebugSymbol.Symbol>d0REOlxVc2Vyc1xFbGlhc1xyZXBvc2l0b3J5XEZpcnN0UmVwb3NpdG9yeVxXcGZXaXRoV0ZcVGhlV29ya2Zsb3cueGFtbBUyA48BEgIBATQHiAEPAgEKdA+EARcCAQd4F4ABHwIBBHwffI8BAgECNgtsFgIBDnEPcXUCAQw6EzpzAgEPPg1jFwIBGGQNaycCARNxM3E+AgENQRNBigECATFIEWEWAgEZZxNnYgIBFEsXS3ICARpPFVgnAgEmWxVfJwIBH1YZVm8CASxSG1LYAQIBJ10ZXW8CASFbqAFbtgECASA=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0REOlxVc2Vyc1xFbGlhc1xyZXBvc2l0b3J5XEZpcnN0UmVwb3NpdG9yeVxXcGZXaXRoV0ZcVGhlV29ya2Zsb3cueGFtbBsyA6QBEgIBATQHnQEPAgEKiQEPmQEXAgEHjQEXlQEfAgEEkQEfkQGPAQIBAjYLgQEWAgEOhgEPhgF1AgEMOhM6cwIBDz4NSB8CAT9JDXMXAgEedA15HwIBGHoNgAEnAgEThgEzhgE+AgENRRFFZwIBREETQaUBAgFATBNMigECATtTEXEWAgEfdhF2ZwIBGnRqdKUBAgEZfRN9YgIBFFYXVnICASBaFWMnAgEwZhVvJwIBJWEZYW8CATZdG13ZAQIBMW0ZbW8CAStpG2mvAQIBJg==</sads:DebugSymbol.Symbol>
   </StateMachine>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="AddToCollection`1_6" sap:VirtualizedContainerService.HintSize="494,22" />
       <sap2010:ViewStateData Id="AddToCollection`1_5" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="AddToCollection`1_2" sap:VirtualizedContainerService.HintSize="200,22" />
       <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="464,210" />
       <sap2010:ViewStateData Id="ForEach`1_1" sap:VirtualizedContainerService.HintSize="494,360" />
+      <sap2010:ViewStateData Id="AddToCollection`1_7" sap:VirtualizedContainerService.HintSize="494,22" />
       <sap2010:ViewStateData Id="AssignToExtension_1" sap:VirtualizedContainerService.HintSize="494,22" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="516,546">
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="516,670">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -210,7 +233,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="State_4" sap:VirtualizedContainerService.HintSize="542,904">
+      <sap2010:ViewStateData Id="State_4" sap:VirtualizedContainerService.HintSize="542,1028">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <av:Point x:Key="ShapeLocation">50,80</av:Point>
