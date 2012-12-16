@@ -1,0 +1,34 @@
+﻿<Window x:Class="WpfWithWF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="504.4" Width="525">
+    <Grid>
+        <Button x:Name="btnStart" Content="Start Planning" HorizontalAlignment="Left" Margin="10,262,0,0" VerticalAlignment="Top" Width="110" Click="btnStart_Click" RenderTransformOrigin="3.917,0.417"/>
+        <GroupBox x:Name="grpProjectInformation" Header="Project Information" HorizontalAlignment="Left" Height="247" Margin="10,10,0,0" VerticalAlignment="Top" Width="498"/>
+        <Label Content="Project Name" HorizontalAlignment="Left" Margin="21,34,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.464,0.563"/>
+        <TextBox x:Name="txtProjectName" HorizontalAlignment="Left" Height="23" Margin="150,34,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="346" KeyboardNavigation.TabIndex="1"/>
+        <Label Content="Applications" HorizontalAlignment="Left" Margin="21,123,0,0" VerticalAlignment="Top"/>
+        <Label Content="Project concerns the following applications:" HorizontalAlignment="Left" Margin="21,65,0,0" VerticalAlignment="Top"/>
+        <Label Content="Application Name" HorizontalAlignment="Left" Margin="21,91,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtApplicationName" KeyboardNavigation.TabIndex="2" HorizontalAlignment="Left" Height="23" Margin="150,95,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="154"/>
+        <Button x:Name="btnAddApplication" KeyboardNavigation.TabIndex="4" Content="Add" HorizontalAlignment="Left" Margin="421,96,0,0" VerticalAlignment="Top" Width="75" Click="btnAddApplication_Click"/>
+        <CheckBox x:Name="chkNewApp" KeyboardNavigation.TabIndex="3" Content="New Application" HorizontalAlignment="Left" Margin="309,98,0,0" VerticalAlignment="Top"/>
+        <ListView x:Name="grvApplications" HorizontalAlignment="Left" Height="94" Margin="27,149,0,0" VerticalAlignment="Top" Width="469" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Application Name" Width="200" DisplayMemberBinding="{Binding ApplicationName}"/>
+                    <GridViewColumn Header="New application" DisplayMemberBinding="{Binding NewApplication}"/>
+                </GridView>
+            </ListView.View>
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="Delete" Header="Delete"></MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
+        </ListView>
+        <Button x:Name="btnExectution" Content="Start Execution" HorizontalAlignment="Left" Margin="194,263,0,0" VerticalAlignment="Top" Width="110" Click="btnExectution_Click" RenderTransformOrigin="3.917,0.417"/>
+        <Button x:Name="btnStart_Copy1" Content="Start Post Cutover" HorizontalAlignment="Left" Margin="398,263,0,0" VerticalAlignment="Top" Width="110" Click="btnStart_Click" RenderTransformOrigin="3.917,0.417"/>
+        <TextBlock x:Name="txbOutput" HorizontalAlignment="Left" Height="164" Margin="10,300,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="498" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+
+    </Grid>
+</Window>
