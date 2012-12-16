@@ -30,7 +30,10 @@
   <TextExpression.ReferencesForImplementation>
     <sco:Collection x:TypeArguments="AssemblyReference">
       <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
       <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.ServiceModel.Activities</AssemblyReference>
       <AssemblyReference>System.Xml</AssemblyReference>
       <AssemblyReference>Microsoft.CSharp</AssemblyReference>
       <AssemblyReference>System.Core</AssemblyReference>
@@ -40,9 +43,6 @@
       <AssemblyReference>WindowsBase</AssemblyReference>
       <AssemblyReference>PresentationCore</AssemblyReference>
       <AssemblyReference>PresentationFramework</AssemblyReference>
-      <AssemblyReference>System.Activities</AssemblyReference>
-      <AssemblyReference>System.ServiceModel</AssemblyReference>
-      <AssemblyReference>System.ServiceModel.Activities</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
       <AssemblyReference>WpfWithWF</AssemblyReference>
     </sco:Collection>
@@ -97,18 +97,14 @@
                 </If>
               </ActivityAction>
             </ForEach>
-            <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
-              <Assign.To>
-                <OutArgument x:TypeArguments="scg:List(x:String)">
-                  <mca:CSharpReference x:TypeArguments="scg:List(x:String)">Output</mca:CSharpReference>
-                </OutArgument>
-              </Assign.To>
-              <Assign.Value>
+            <local:AssignToExtension>
+              <local:AssignToExtension.Text>
                 <InArgument x:TypeArguments="scg:List(x:String)">
                   <mca:CSharpValue x:TypeArguments="scg:List(x:String)">tempCol</mca:CSharpValue>
                 </InArgument>
-              </Assign.Value>
-            </Assign>
+              </local:AssignToExtension.Text>
+              <sap2010:WorkflowViewState.IdRef>AssignToExtension_1</sap2010:WorkflowViewState.IdRef>
+            </local:AssignToExtension>
           </Sequence>
         </State.Entry>
         <State.Transitions>
@@ -143,16 +139,16 @@
     <x:Reference>__ReferenceID1</x:Reference>
     <x:Reference>__ReferenceID2</x:Reference>
     <x:Reference>__ReferenceID3</x:Reference>
-    <sads:DebugSymbol.Symbol>d1hjOlx1c2Vyc1xibGVsXGRvY3VtZW50c1x2aXN1YWwgc3R1ZGlvIDIwMTJcUHJvamVjdHNcV3BmV2l0aFdGXFdwZldpdGhXRlxUaGVXb3JrZmxvdy54YW1sFjIDkwESAgEBNAeMAQ8CAQp4D4gBFwIBB3wXhAEfAgEEgAEfgAGPAQIBAjYLcBYCAQ51D3V1AgEMOhM6cwIBDz4NYxcCARxkDW8WAgETdTN1PgIBDUETQYoBAgE1SBFhFgIBHWwTbGICARhnE2dpAgEUSxdLcgIBHk8VWCcCASpbFV8nAgEjVhlWbwIBMFIbUtgBAgErXRldbwIBJVuoAVu2AQIBJA==</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d0REOlxVc2Vyc1xFbGlhc1xyZXBvc2l0b3J5XEZpcnN0UmVwb3NpdG9yeVxXcGZXaXRoV0ZcVGhlV29ya2Zsb3cueGFtbBUyA48BEgIBATQHiAEPAgEKdA+EARcCAQd4F4ABHwIBBHwffI8BAgECNgtsFgIBDnEPcXUCAQw6EzpzAgEPPg1jFwIBGGQNaycCARNxM3E+AgENQRNBigECATFIEWEWAgEZZxNnYgIBFEsXS3ICARpPFVgnAgEmWxVfJwIBH1YZVm8CASxSG1LYAQIBJ10ZXW8CASFbqAFbtgECASA=</sads:DebugSymbol.Symbol>
   </StateMachine>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="AddToCollection`1_5" sap:VirtualizedContainerService.HintSize="200,22.4" />
-      <sap2010:ViewStateData Id="AddToCollection`1_2" sap:VirtualizedContainerService.HintSize="200,22.4" />
-      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="464,212.8" />
-      <sap2010:ViewStateData Id="ForEach`1_1" sap:VirtualizedContainerService.HintSize="494.4,363.2" />
-      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="494.4,62.4" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="516.8,590.4">
+      <sap2010:ViewStateData Id="AddToCollection`1_5" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="AddToCollection`1_2" sap:VirtualizedContainerService.HintSize="200,22" />
+      <sap2010:ViewStateData Id="If_1" sap:VirtualizedContainerService.HintSize="464,210" />
+      <sap2010:ViewStateData Id="ForEach`1_1" sap:VirtualizedContainerService.HintSize="494,360" />
+      <sap2010:ViewStateData Id="AssignToExtension_1" sap:VirtualizedContainerService.HintSize="494,22" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="516,546">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -214,7 +210,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="State_4" sap:VirtualizedContainerService.HintSize="542.4,956.8">
+      <sap2010:ViewStateData Id="State_4" sap:VirtualizedContainerService.HintSize="542,904">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <av:Point x:Key="ShapeLocation">50,80</av:Point>

@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Activities;
 using System.Activities.Statements;
+using System.Activities.Tracking;
 
 
 using System.Collections.ObjectModel;
@@ -67,24 +68,43 @@ namespace WpfWithWF
             
             workflow = new WorkflowApplication(new TheWorkflow(),workflowArgs);
             workflow.Completed = WorkflowCompletedCallback;
-            workflow.Idle = delegate(WorkflowApplicationIdleEventArgs eArgs) //anonymous method
-            {
-                idleEvent.Set();
-            };
+            workflow.Idle = WorkflowIdleCallback;
+            workflow.Extensions.Add(new List<string>());
+
+
 
             workflow.Run();
             
 
         }
 
+        private void WorkflowIdleCallback(WorkflowApplicationIdleEventArgs eArgs)
+        {
+            
+            idleEvent.Set();
+            var output = eArgs.GetInstanceExtensions<List<string>>();
+            if (output.First() != null)
+            {
+                this.txbOutput.Dispatcher.Invoke (() =>
+                {
+                    foreach (string item in output.First())
+                    {
+                        this.txbOutput.Text += item;
+                    }
+                });
+            }
+            
+
+
+            
+
+        }
+
+
+        
         private void WorkflowCompletedCallback(WorkflowApplicationCompletedEventArgs cArgs)
         {
-            List<string> output = new List<string>();
-            output = (List<string>)cArgs.Outputs["Output"];
-            foreach (string item in output)
-            {
-                txbOutput.Text =item ;
-            }
+
             
         }
 
