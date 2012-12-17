@@ -63,6 +63,16 @@ namespace WpfWithWF
             workflow.Idle = WorkflowIdleCallback;
             workflow.Extensions.Add(new List<string>());
             workflow.Extensions.Add(wce);
+
+            EtwTrackingParticipant trackingParticipant = new EtwTrackingParticipant();
+            TrackingProfile trackingProfile = new TrackingProfile();
+            trackingProfile.Name = "SampleTrackingProfile";
+            trackingProfile.ActivityDefinitionId ="FIB-->FIS";
+            trackingProfile.Queries.Add(new WorkflowInstanceQuery (){States = {"*"}});
+
+
+            workflow.Extensions.Add(trackingParticipant);
+
             this.txbOutput.Text += "Starting planning phase...\r\n";
             workflow.Run();
         }
