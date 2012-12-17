@@ -81,7 +81,7 @@ namespace WpfWithWF
         private void WorkflowIdleCallback(WorkflowApplicationIdleEventArgs eArgs)
         {
             
-            idleEvent.Set();
+            //idleEvent.Set();
             var output = eArgs.GetInstanceExtensions<List<string>>();
             if (output.First() != null)
             {
@@ -104,7 +104,17 @@ namespace WpfWithWF
         
         private void WorkflowCompletedCallback(WorkflowApplicationCompletedEventArgs cArgs)
         {
-
+            var output = cArgs.GetInstanceExtensions<List<string>>();
+            if (output.First() != null)
+            {
+                this.txbOutput.Dispatcher.Invoke(() =>
+                {
+                    foreach (string item in output.First())
+                    {
+                        this.txbOutput.Text += item + "\r\n";
+                    }
+                });
+            }
             
         }
 
@@ -134,13 +144,17 @@ namespace WpfWithWF
 
         private void btnExectution_Click(object sender, RoutedEventArgs e)
         {
-            EventArgs args = new EventArgs();
             workflow.ResumeBookmark("Execution", "anything");
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             this.txbOutput.Text = string.Empty;
+        }
+
+        private void btnPostCutover_Click(object sender, RoutedEventArgs e)
+        {
+            workflow.ResumeBookmark("PostCutOver", null);
         }
 
 

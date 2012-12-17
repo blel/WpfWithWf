@@ -26,7 +26,7 @@ namespace WpfWithWF
 
         void OnBookmarkCallback(NativeActivityContext context, Bookmark bookmark, object obj)
         {
-            System.Windows.MessageBox.Show("Callback");
+            
         }
         protected override bool CanInduceIdle
         {

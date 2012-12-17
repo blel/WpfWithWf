@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="504.4" Width="525">
     <Grid>
-        <Button x:Name="btnStart" Content="Start Planning" HorizontalAlignment="Left" Margin="10,262,0,0" VerticalAlignment="Top" Width="110" Click="btnStart_Click" RenderTransformOrigin="3.917,0.417"/>
+        <Button x:Name="btnStart" Content="Start Planning" HorizontalAlignment="Left" Margin="10,263,0,0" VerticalAlignment="Top" Width="110" Click="btnStart_Click" RenderTransformOrigin="3.917,0.417"/>
         <GroupBox x:Name="grpProjectInformation" Header="Project Information" HorizontalAlignment="Left" Height="247" Margin="10,10,0,0" VerticalAlignment="Top" Width="498"/>
         <Label Content="Project Name" HorizontalAlignment="Left" Margin="21,34,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.464,0.563"/>
         <TextBox x:Name="txtProjectName" HorizontalAlignment="Left" Height="23" Margin="150,34,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="346" KeyboardNavigation.TabIndex="1"/>
@@ -27,9 +27,9 @@
             </ListView.ContextMenu>
         </ListView>
         <Button x:Name="btnExectution" Content="Start Execution" HorizontalAlignment="Left" Margin="125,263,0,0" VerticalAlignment="Top" Width="110" Click="btnExectution_Click" RenderTransformOrigin="3.917,0.417"/>
-        <Button x:Name="btnStart_Copy1" Content="Start Post Cutover" HorizontalAlignment="Left" Margin="240,263,0,0" VerticalAlignment="Top" Width="110" Click="btnStart_Click" RenderTransformOrigin="3.917,0.417"/>
+        <Button x:Name="btnPostCutover" Content="Start Post Cutover" HorizontalAlignment="Left" Margin="240,263,0,0" VerticalAlignment="Top" Width="110" RenderTransformOrigin="3.917,0.417" Click="btnPostCutover_Click"/>
         <ScrollViewer Margin="0,290,0,0">
-            <TextBlock TextWrapping="Wrap" Text="TextBlock" Name="txbOutput"/>
+            <TextBlock TextWrapping="Wrap" Text="" Name="txbOutput"/>
         </ScrollViewer>
         <Button x:Name="btnClear" Content="Clear" HorizontalAlignment="Left" Margin="432,263,0,0" VerticalAlignment="Top" Width="75" Click="btnClear_Click"/>
     </Grid>
