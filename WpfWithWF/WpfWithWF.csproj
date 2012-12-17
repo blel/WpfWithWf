@@ -56,13 +56,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AssignToExtension.cs" />
+    <Compile Include="AssignToExtensionActivity.cs" />
     <Compile Include="InputBoxActivity.cs" />
-    <Compile Include="test.xaml.cs">
-      <DependentUpon>test.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TestActivity.cs" />
     <Compile Include="TriggerActivity.cs" />
+    <Compile Include="WorkflowCommunicationExtension.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -76,10 +73,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="test.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <XamlAppDef Include="TheWorkflow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

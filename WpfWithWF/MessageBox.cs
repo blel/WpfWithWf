@@ -20,6 +20,8 @@ namespace WpfWithWF
             // Obtain the runtime value of the Text input argument
             string text = context.GetValue(this.Text);
             MessageBox.Show(text);
+            WorkflowCommunicationExtension wce =  context.GetExtension<WorkflowCommunicationExtension>();
+            wce.CommunicationContent = text;
             
         }
     }

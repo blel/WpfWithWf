@@ -7,7 +7,7 @@ using System.Activities;
 namespace WpfWithWF
 {
 
-    public sealed class AssignToExtension : CodeActivity
+    public sealed class AssignToExtensionActivity : CodeActivity
     {
         // Define an activity input argument of type string
         public InArgument<List<string>> Text { get; set; }

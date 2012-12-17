@@ -90,7 +90,7 @@
                     <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" sap2010:WorkflowViewState.IdRef="AddToCollection`1_5">
                       <AddToCollection.Item>
                         <InArgument x:TypeArguments="x:String">
-                          <mca:CSharpValue x:TypeArguments="x:String">string.Format("Since the application {0} is new, you must contact the Head of FIS to nominate a new AOR.", item.ApplicationName)</mca:CSharpValue>
+                          <mca:CSharpValue x:TypeArguments="x:String">string.Format("Since the application {0} is new, you must contact the Head of AORs to nominate a new AOR.", item.ApplicationName)</mca:CSharpValue>
                         </InArgument>
                       </AddToCollection.Item>
                       <InArgument x:TypeArguments="scg:ICollection(x:String)">
@@ -128,13 +128,13 @@
                 <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tempCol</mca:CSharpValue>
               </InArgument>
             </AddToCollection>
-            <local:AssignToExtension DoFlush="{x:Null}" sap2010:WorkflowViewState.IdRef="AssignToExtension_1">
-              <local:AssignToExtension.Text>
+            <local:AssignToExtensionActivity DoFlush="{x:Null}" sap2010:WorkflowViewState.IdRef="AssignToExtension_1">
+              <local:AssignToExtensionActivity.Text>
                 <InArgument x:TypeArguments="scg:List(x:String)">
                   <mca:CSharpValue x:TypeArguments="scg:List(x:String)">tempCol</mca:CSharpValue>
                 </InArgument>
-              </local:AssignToExtension.Text>
-            </local:AssignToExtension>
+              </local:AssignToExtensionActivity.Text>
+            </local:AssignToExtensionActivity>
           </Sequence>
         </State.Entry>
         <State.Transitions>
@@ -149,49 +149,68 @@
                     <Sequence.Variables>
                       <Variable x:TypeArguments="av:MessageBoxResult" Name="ClickedButton" />
                     </Sequence.Variables>
-                    <AddToCollection x:TypeArguments="x:String" DisplayName="Create Protocol" sap2010:WorkflowViewState.IdRef="AddToCollection`1_9">
-                      <AddToCollection.Item>
-                        <InArgument x:TypeArguments="x:String">
-                          <mca:CSharpValue x:TypeArguments="x:String">"Create \"Protocol - Application Handover to FIS\""</mca:CSharpValue>
+                    <ForEach x:TypeArguments="local:ApplicationData" DisplayName="ForEach&lt;ApplicationData&gt;" sap2010:WorkflowViewState.IdRef="ForEach`1_2">
+                      <ForEach.Values>
+                        <InArgument x:TypeArguments="scg:IEnumerable(local:ApplicationData)">
+                          <mca:CSharpValue x:TypeArguments="scg:IEnumerable(local:ApplicationData)">ProjectInfo.ApplicationInfo</mca:CSharpValue>
                         </InArgument>
-                      </AddToCollection.Item>
-                      <InArgument x:TypeArguments="scg:ICollection(x:String)">
-                        <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tmpCol</mca:CSharpValue>
-                      </InArgument>
-                    </AddToCollection>
-                    <local:InputBoxActivity DisplayName="Handover Required?" sap2010:WorkflowViewState.IdRef="InputBoxActivity_1" Text="Handover to ITS required?">
-                      <local:InputBoxActivity.UserClickedButton>
-                        <OutArgument x:TypeArguments="av:MessageBoxResult">
-                          <mca:CSharpReference x:TypeArguments="av:MessageBoxResult">ClickedButton</mca:CSharpReference>
-                        </OutArgument>
-                      </local:InputBoxActivity.UserClickedButton>
-                    </local:InputBoxActivity>
-                    <If sap2010:WorkflowViewState.IdRef="If_2">
-                      <If.Condition>
-                        <InArgument x:TypeArguments="x:Boolean">
-                          <mca:CSharpValue x:TypeArguments="x:Boolean">ClickedButton == MessageBoxResult.Yes</mca:CSharpValue>
-                        </InArgument>
-                      </If.Condition>
-                      <If.Then>
-                        <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" sap2010:WorkflowViewState.IdRef="AddToCollection`1_10">
-                          <AddToCollection.Item>
-                            <InArgument x:TypeArguments="x:String">
-                              <mca:CSharpValue x:TypeArguments="x:String">"Follow the steps in \"Applikationsübergabe an ITS V1.0\""</mca:CSharpValue>
+                      </ForEach.Values>
+                      <ActivityAction x:TypeArguments="local:ApplicationData">
+                        <ActivityAction.Argument>
+                          <DelegateInArgument x:TypeArguments="local:ApplicationData" Name="item" />
+                        </ActivityAction.Argument>
+                        <Sequence sap2010:WorkflowViewState.IdRef="Sequence_3">
+                          <AddToCollection x:TypeArguments="x:String" DisplayName="Create Protocol" sap2010:WorkflowViewState.IdRef="AddToCollection`1_9">
+                            <AddToCollection.Item>
+                              <InArgument x:TypeArguments="x:String">
+                                <mca:CSharpValue x:TypeArguments="x:String">string.Format("Create \"Protocol - Application Handover to FIS\" for Application \"{0}\"",item.ApplicationName)</mca:CSharpValue>
+                              </InArgument>
+                            </AddToCollection.Item>
+                            <InArgument x:TypeArguments="scg:ICollection(x:String)">
+                              <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tmpCol</mca:CSharpValue>
                             </InArgument>
-                          </AddToCollection.Item>
-                          <InArgument x:TypeArguments="scg:ICollection(x:String)">
-                            <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tmpCol</mca:CSharpValue>
-                          </InArgument>
-                        </AddToCollection>
-                      </If.Then>
-                    </If>
-                    <local:AssignToExtension DoFlush="True" sap2010:WorkflowViewState.IdRef="AssignToExtension_2">
-                      <local:AssignToExtension.Text>
+                          </AddToCollection>
+                          <local:InputBoxActivity DisplayName="Handover Required?" sap2010:WorkflowViewState.IdRef="InputBoxActivity_1">
+                            <local:InputBoxActivity.Text>
+                              <InArgument x:TypeArguments="x:String">
+                                <mca:CSharpValue x:TypeArguments="x:String">string.Format("{0}: Handover to ITS required?",item.ApplicationName)</mca:CSharpValue>
+                              </InArgument>
+                            </local:InputBoxActivity.Text>
+                            <local:InputBoxActivity.UserClickedButton>
+                              <OutArgument x:TypeArguments="av:MessageBoxResult">
+                                <mca:CSharpReference x:TypeArguments="av:MessageBoxResult">ClickedButton</mca:CSharpReference>
+                              </OutArgument>
+                            </local:InputBoxActivity.UserClickedButton>
+                          </local:InputBoxActivity>
+                          <If sap2010:WorkflowViewState.IdRef="If_2">
+                            <If.Condition>
+                              <InArgument x:TypeArguments="x:Boolean">
+                                <mca:CSharpValue x:TypeArguments="x:Boolean">ClickedButton == MessageBoxResult.Yes</mca:CSharpValue>
+                              </InArgument>
+                            </If.Condition>
+                            <If.Then>
+                              <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" sap2010:WorkflowViewState.IdRef="AddToCollection`1_10">
+                                <AddToCollection.Item>
+                                  <InArgument x:TypeArguments="x:String">
+                                    <mca:CSharpValue x:TypeArguments="x:String">string.Format("{0}: Follow the steps in \"Applikationsübergabe an ITS V1.0\"", item.ApplicationName)</mca:CSharpValue>
+                                  </InArgument>
+                                </AddToCollection.Item>
+                                <InArgument x:TypeArguments="scg:ICollection(x:String)">
+                                  <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tmpCol</mca:CSharpValue>
+                                </InArgument>
+                              </AddToCollection>
+                            </If.Then>
+                          </If>
+                        </Sequence>
+                      </ActivityAction>
+                    </ForEach>
+                    <local:AssignToExtensionActivity DoFlush="True" sap2010:WorkflowViewState.IdRef="AssignToExtension_2">
+                      <local:AssignToExtensionActivity.Text>
                         <InArgument x:TypeArguments="scg:List(x:String)">
                           <mca:CSharpValue x:TypeArguments="scg:List(x:String)">tmpCol</mca:CSharpValue>
                         </InArgument>
-                      </local:AssignToExtension.Text>
-                    </local:AssignToExtension>
+                      </local:AssignToExtensionActivity.Text>
+                    </local:AssignToExtensionActivity>
                   </Sequence>
                 </State.Entry>
                 <State.Transitions>
@@ -202,95 +221,131 @@
                     <Transition.To>
                       <State x:Name="__ReferenceID10" DisplayName="PostCutover" sap2010:WorkflowViewState.IdRef="State_2">
                         <State.Entry>
-                          <Flowchart sap2010:WorkflowViewState.IdRef="Flowchart_1">
-                            <Flowchart.Variables>
-                              <Variable x:TypeArguments="scg:List(x:String)" Name="tmpCol">
-                                <Variable.Default>
-                                  <mca:CSharpValue x:TypeArguments="scg:List(x:String)">new List&lt;string&gt;()</mca:CSharpValue>
-                                </Variable.Default>
-                              </Variable>
-                            </Flowchart.Variables>
-                            <Flowchart.StartNode>
-                              <FlowStep x:Name="__ReferenceID1" sap2010:WorkflowViewState.IdRef="FlowStep_1">
-                                <local:InputBoxActivity DisplayName="Operation runs ok?" sap2010:WorkflowViewState.IdRef="InputBoxActivity_2" Text="Does operation run smoothly since 3-4 weeks?">
-                                  <local:InputBoxActivity.UserClickedButton>
-                                    <OutArgument x:TypeArguments="av:MessageBoxResult">
-                                      <mca:CSharpReference x:TypeArguments="av:MessageBoxResult">ClickedButton</mca:CSharpReference>
-                                    </OutArgument>
-                                  </local:InputBoxActivity.UserClickedButton>
-                                </local:InputBoxActivity>
-                                <FlowStep.Next>
-                                  <FlowDecision x:Name="__ReferenceID2" sap2010:WorkflowViewState.IdRef="FlowDecision_1">
-                                    <FlowDecision.Condition>
-                                      <mca:CSharpValue x:TypeArguments="x:Boolean">ClickedButton == MessageBoxResult.Yes</mca:CSharpValue>
-                                    </FlowDecision.Condition>
-                                    <FlowDecision.True>
-                                      <FlowStep x:Name="__ReferenceID0" sap2010:WorkflowViewState.IdRef="FlowStep_5">
-                                        <local:InputBoxActivity DisplayName="Handover protocol signed" sap2010:WorkflowViewState.IdRef="InputBoxActivity_3" Text="Application handover protocol signed by AOR?">
-                                          <local:InputBoxActivity.UserClickedButton>
-                                            <OutArgument x:TypeArguments="av:MessageBoxResult">
-                                              <mca:CSharpReference x:TypeArguments="av:MessageBoxResult">ClickedButton</mca:CSharpReference>
-                                            </OutArgument>
-                                          </local:InputBoxActivity.UserClickedButton>
-                                        </local:InputBoxActivity>
-                                        <FlowStep.Next>
-                                          <FlowDecision x:Name="__ReferenceID4" sap2010:WorkflowViewState.IdRef="FlowDecision_2">
-                                            <FlowDecision.Condition>
-                                              <mca:CSharpValue x:TypeArguments="x:Boolean">ClickedButton == MessageBoxResult.Yes</mca:CSharpValue>
-                                            </FlowDecision.Condition>
-                                            <FlowDecision.True>
-                                              <FlowStep x:Name="__ReferenceID6" sap2010:WorkflowViewState.IdRef="FlowStep_3">
-                                                <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" sap2010:WorkflowViewState.IdRef="AddToCollection`1_11" Item="Very important: communicate handover to Line of Business!!!">
-                                                  <InArgument x:TypeArguments="scg:ICollection(x:String)">
-                                                    <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tmpCol</mca:CSharpValue>
+                          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_4">
+                            <ForEach x:TypeArguments="local:ApplicationData" DisplayName="ForEach&lt;ApplicationData&gt;" sap2010:WorkflowViewState.IdRef="ForEach`1_3">
+                              <ForEach.Values>
+                                <InArgument x:TypeArguments="scg:IEnumerable(local:ApplicationData)">
+                                  <mca:CSharpValue x:TypeArguments="scg:IEnumerable(local:ApplicationData)">ProjectInfo.ApplicationInfo</mca:CSharpValue>
+                                </InArgument>
+                              </ForEach.Values>
+                              <ActivityAction x:TypeArguments="local:ApplicationData">
+                                <ActivityAction.Argument>
+                                  <DelegateInArgument x:TypeArguments="local:ApplicationData" Name="item" />
+                                </ActivityAction.Argument>
+                                <Flowchart sap2010:WorkflowViewState.IdRef="Flowchart_1">
+                                  <Flowchart.Variables>
+                                    <Variable x:TypeArguments="scg:List(x:String)" Name="tmpCol">
+                                      <Variable.Default>
+                                        <mca:CSharpValue x:TypeArguments="scg:List(x:String)">new List&lt;string&gt;()</mca:CSharpValue>
+                                      </Variable.Default>
+                                    </Variable>
+                                  </Flowchart.Variables>
+                                  <Flowchart.StartNode>
+                                    <FlowStep x:Name="__ReferenceID1" sap2010:WorkflowViewState.IdRef="FlowStep_1">
+                                      <local:InputBoxActivity DisplayName="Operation runs ok?" sap2010:WorkflowViewState.IdRef="InputBoxActivity_2">
+                                        <local:InputBoxActivity.Text>
+                                          <InArgument x:TypeArguments="x:String">
+                                            <mca:CSharpValue x:TypeArguments="x:String">string.Format("{0}: Does operation run smoothly since 3-4 weeks?", item.ApplicationName)</mca:CSharpValue>
+                                          </InArgument>
+                                        </local:InputBoxActivity.Text>
+                                        <local:InputBoxActivity.UserClickedButton>
+                                          <OutArgument x:TypeArguments="av:MessageBoxResult">
+                                            <mca:CSharpReference x:TypeArguments="av:MessageBoxResult">ClickedButton</mca:CSharpReference>
+                                          </OutArgument>
+                                        </local:InputBoxActivity.UserClickedButton>
+                                      </local:InputBoxActivity>
+                                      <FlowStep.Next>
+                                        <FlowDecision x:Name="__ReferenceID2" sap2010:WorkflowViewState.IdRef="FlowDecision_1">
+                                          <FlowDecision.Condition>
+                                            <mca:CSharpValue x:TypeArguments="x:Boolean">ClickedButton == MessageBoxResult.Yes</mca:CSharpValue>
+                                          </FlowDecision.Condition>
+                                          <FlowDecision.True>
+                                            <FlowStep x:Name="__ReferenceID0" sap2010:WorkflowViewState.IdRef="FlowStep_5">
+                                              <local:InputBoxActivity DisplayName="Handover protocol signed" sap2010:WorkflowViewState.IdRef="InputBoxActivity_3">
+                                                <local:InputBoxActivity.Text>
+                                                  <InArgument x:TypeArguments="x:String">
+                                                    <mca:CSharpValue x:TypeArguments="x:String">string.Format("{0}: Application handover protocol signed by AOR?", item.ApplicationName)</mca:CSharpValue>
                                                   </InArgument>
-                                                </AddToCollection>
-                                                <FlowStep.Next>
-                                                  <FlowStep x:Name="__ReferenceID7" sap2010:WorkflowViewState.IdRef="FlowStep_2">
-                                                    <local:AssignToExtension DoFlush="True" sap2010:WorkflowViewState.IdRef="AssignToExtension_3">
-                                                      <local:AssignToExtension.Text>
-                                                        <InArgument x:TypeArguments="scg:List(x:String)">
-                                                          <mca:CSharpValue x:TypeArguments="scg:List(x:String)">tmpCol</mca:CSharpValue>
+                                                </local:InputBoxActivity.Text>
+                                                <local:InputBoxActivity.UserClickedButton>
+                                                  <OutArgument x:TypeArguments="av:MessageBoxResult">
+                                                    <mca:CSharpReference x:TypeArguments="av:MessageBoxResult">ClickedButton</mca:CSharpReference>
+                                                  </OutArgument>
+                                                </local:InputBoxActivity.UserClickedButton>
+                                              </local:InputBoxActivity>
+                                              <FlowStep.Next>
+                                                <FlowDecision x:Name="__ReferenceID4" sap2010:WorkflowViewState.IdRef="FlowDecision_2">
+                                                  <FlowDecision.Condition>
+                                                    <mca:CSharpValue x:TypeArguments="x:Boolean">ClickedButton == MessageBoxResult.Yes</mca:CSharpValue>
+                                                  </FlowDecision.Condition>
+                                                  <FlowDecision.True>
+                                                    <FlowStep x:Name="__ReferenceID6" sap2010:WorkflowViewState.IdRef="FlowStep_3">
+                                                      <AddToCollection x:TypeArguments="x:String" DisplayName="AddToCollection&lt;String&gt;" sap2010:WorkflowViewState.IdRef="AddToCollection`1_11" Item="For all applications it is very important, that you communicate the handover to Line of Business!!!">
+                                                        <InArgument x:TypeArguments="scg:ICollection(x:String)">
+                                                          <mca:CSharpValue x:TypeArguments="scg:ICollection(x:String)">tmpCol</mca:CSharpValue>
                                                         </InArgument>
-                                                      </local:AssignToExtension.Text>
-                                                    </local:AssignToExtension>
-                                                  </FlowStep>
-                                                </FlowStep.Next>
-                                              </FlowStep>
-                                            </FlowDecision.True>
-                                            <FlowDecision.False>
-                                              <FlowStep x:Name="__ReferenceID5" sap2010:WorkflowViewState.IdRef="FlowStep_4">
-                                                <local:WfMessageBox DisplayName="get signature" sap2010:WorkflowViewState.IdRef="WfMessageBox_1" Text="Get signature of AOR." />
-                                                <FlowStep.Next>
-                                                  <x:Reference>__ReferenceID0</x:Reference>
-                                                </FlowStep.Next>
-                                              </FlowStep>
-                                            </FlowDecision.False>
-                                          </FlowDecision>
-                                        </FlowStep.Next>
-                                      </FlowStep>
-                                    </FlowDecision.True>
-                                    <FlowDecision.False>
-                                      <FlowStep x:Name="__ReferenceID3" sap2010:WorkflowViewState.IdRef="FlowStep_6">
-                                        <local:WfMessageBox DisplayName="Please troubleshoot" sap2010:WorkflowViewState.IdRef="WfMessageBox_2" Text="Please troubleshoot" />
-                                        <FlowStep.Next>
-                                          <x:Reference>__ReferenceID1</x:Reference>
-                                        </FlowStep.Next>
-                                      </FlowStep>
-                                    </FlowDecision.False>
-                                  </FlowDecision>
-                                </FlowStep.Next>
-                              </FlowStep>
-                            </Flowchart.StartNode>
-                            <x:Reference>__ReferenceID1</x:Reference>
-                            <x:Reference>__ReferenceID2</x:Reference>
-                            <x:Reference>__ReferenceID3</x:Reference>
-                            <x:Reference>__ReferenceID0</x:Reference>
-                            <x:Reference>__ReferenceID4</x:Reference>
-                            <x:Reference>__ReferenceID5</x:Reference>
-                            <x:Reference>__ReferenceID6</x:Reference>
-                            <x:Reference>__ReferenceID7</x:Reference>
-                          </Flowchart>
+                                                      </AddToCollection>
+                                                      <FlowStep.Next>
+                                                        <FlowStep x:Name="__ReferenceID7" sap2010:WorkflowViewState.IdRef="FlowStep_2">
+                                                          <local:AssignToExtensionActivity DoFlush="True" sap2010:WorkflowViewState.IdRef="AssignToExtension_3">
+                                                            <local:AssignToExtensionActivity.Text>
+                                                              <InArgument x:TypeArguments="scg:List(x:String)">
+                                                                <mca:CSharpValue x:TypeArguments="scg:List(x:String)">tmpCol</mca:CSharpValue>
+                                                              </InArgument>
+                                                            </local:AssignToExtensionActivity.Text>
+                                                          </local:AssignToExtensionActivity>
+                                                        </FlowStep>
+                                                      </FlowStep.Next>
+                                                    </FlowStep>
+                                                  </FlowDecision.True>
+                                                  <FlowDecision.False>
+                                                    <FlowStep x:Name="__ReferenceID5" sap2010:WorkflowViewState.IdRef="FlowStep_4">
+                                                      <local:WfMessageBox DisplayName="get signature" sap2010:WorkflowViewState.IdRef="WfMessageBox_1">
+                                                        <local:WfMessageBox.Text>
+                                                          <InArgument x:TypeArguments="x:String">
+                                                            <mca:CSharpValue x:TypeArguments="x:String">string.Format("{0}: Get signature of AOR.", item.ApplicationName)</mca:CSharpValue>
+                                                          </InArgument>
+                                                        </local:WfMessageBox.Text>
+                                                      </local:WfMessageBox>
+                                                      <FlowStep.Next>
+                                                        <x:Reference>__ReferenceID0</x:Reference>
+                                                      </FlowStep.Next>
+                                                    </FlowStep>
+                                                  </FlowDecision.False>
+                                                </FlowDecision>
+                                              </FlowStep.Next>
+                                            </FlowStep>
+                                          </FlowDecision.True>
+                                          <FlowDecision.False>
+                                            <FlowStep x:Name="__ReferenceID3" sap2010:WorkflowViewState.IdRef="FlowStep_6">
+                                              <local:WfMessageBox DisplayName="Please troubleshoot" sap2010:WorkflowViewState.IdRef="WfMessageBox_2">
+                                                <local:WfMessageBox.Text>
+                                                  <InArgument x:TypeArguments="x:String">
+                                                    <mca:CSharpValue x:TypeArguments="x:String">string.Format("{0}: Please troubleshoot!", item.ApplicationName)</mca:CSharpValue>
+                                                  </InArgument>
+                                                </local:WfMessageBox.Text>
+                                              </local:WfMessageBox>
+                                              <FlowStep.Next>
+                                                <x:Reference>__ReferenceID1</x:Reference>
+                                              </FlowStep.Next>
+                                            </FlowStep>
+                                          </FlowDecision.False>
+                                        </FlowDecision>
+                                      </FlowStep.Next>
+                                    </FlowStep>
+                                  </Flowchart.StartNode>
+                                  <x:Reference>__ReferenceID1</x:Reference>
+                                  <x:Reference>__ReferenceID2</x:Reference>
+                                  <x:Reference>__ReferenceID3</x:Reference>
+                                  <x:Reference>__ReferenceID0</x:Reference>
+                                  <x:Reference>__ReferenceID4</x:Reference>
+                                  <x:Reference>__ReferenceID5</x:Reference>
+                                  <x:Reference>__ReferenceID6</x:Reference>
+                                  <x:Reference>__ReferenceID7</x:Reference>
+                                </Flowchart>
+                              </ActivityAction>
+                            </ForEach>
+                          </Sequence>
                         </State.Entry>
                         <State.Transitions>
                           <Transition DisplayName="T3" sap2010:WorkflowViewState.IdRef="Transition_1">
@@ -323,7 +378,7 @@
     <x:Reference>__ReferenceID9</x:Reference>
     <x:Reference>__ReferenceID10</x:Reference>
     <x:Reference>__ReferenceID11</x:Reference>
-    <sads:DebugSymbol.Symbol>d1hDOlxVc2Vyc1xibGVsXERvY3VtZW50c1xWaXN1YWwgU3R1ZGlvIDIwMTJcUHJvamVjdHNcV3BmV2l0aFdGXFdwZldpdGhXRlxUaGVXb3JrZmxvdy54YW1sRDMDxwISAgEBNQfAAg8CAWqSAQ+8AhcCATfLARexAh8CAQSqAh+qApABAgECNwuKARYCAW6PAQ+PAXUCAWy4Ahe4AncCATiUARPDAR4CAT/IARfIAX8CAT3NARulAicCAQc7EztzAgFvPw1IHwMBqAFJDXMXAwGHAXQNeB8DAYEBeQ2CAR8CAXiDAQ2JAScCAXOPATOPAT4CAW2YARWhAScCAV+iARWoAS4CAVipARW7ARoCAUe8ARXCAS8CAUDIATvIAUgCAT7RASPRAYMBAgEI1wEh3QE6AgEw4QEn4QGLAQIBK5MCKZMCrQECASnlASnrAUICASLvAS/vAZMBAgEdhwIxhwKxAQIBG/MBMfcBQwIBFPoBNYACTwIBDUYRRmcDAa0BQhNCpQEDAakBTBNMigEDAaQBUxFxFgMBiAF2EXZnAwGDAXSeAXTZAQMBggGAARGAAWcCAX18E3zcAQIBeYYBE4YBYgIBdJ8BGZ8BbgIBZZsBG5sBjAECAWCiAYgBogGjAQIBXqUBG6UBeQIBWawBG6wBfwIBSLABGbkBKwIBTbwBNrwBPAIBRr8BG78BaQIBQdcBlAHXAcIBAgE22gEn2gGFAQIBMZMClQGTAqoBAgEq5QGiAeUB0AECASjoAS/oAY0BAgEjhwKXAYcCrgECARz1ATX1AYoBAgEW8wHFAfMBggICARX6AVb6AVwCARP9ATv9AYkBAgEOVhdWcgMBiQFaFWMnAwGZAWYVbycDAY4BtwEdtwFyAgFTswEfswGXAQIBTmEZYW8DAZ8BXRtd2QEDAZoBbRltbwMBlAFpG2mvAQMBjwE=</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d1hDOlxVc2Vyc1xibGVsXERvY3VtZW50c1xWaXN1YWwgU3R1ZGlvIDIwMTJcUHJvamVjdHNcV3BmV2l0aFdGXFdwZldpdGhXRlxUaGVXb3JrZmxvdy54YW1sSjMD/gISAgEBNQf3Ag8DAZ0BkgEP8wIXAgFY3gEX6AIfAgEE4QIf4QKQAQIBAjcLigEWAwGhAY8BD48BdQMBnwHvAhfvAncCAVmUARPWAR4CAWDbARfbAX8CAV7gARvcAiYCAQc7EztzAwGiAT8NSB8DAdsBSQ1zFwMBugF0DXgfAwG0AXkNggEfAwGrAYMBDYkBLwMBpgGPATOPAT4DAaABmAEVzgEfAgFozwEV1QE3AgFh2wE72wFIAgFf4QEd2wInAgEIRhFGZwMB4AFCE0KlAQMB3AFME0yKAQMB1wFTEXEWAwG7AXYRdmcDAbYBdJ4BdNkBAwG1AYABEYABZwMBsAF8E3zcAQMBrAGGAROGAWIDAacBmwEbmwGSAQMBmAGiARnMASQCAWnPAT7PAUQCAWfSARvSAWkCAWLkASPkAZoBAgFU6wEh2QItAgEJVhdWcgMBvAFaFWMnAwHMAWYVbycDAcEBowEbrAEtAwGLAa0BG7gBNAIBfrkBG8sBIAIBau8BKe8BiQECAQr1ASeAAkACAUeEAi2EApEBAgFBwQIvxwJEAgE6iAIvkwJIAgEtlwI1lwKZAQIBJ68CN7UCTAIBIJsCN58CSQIBGKICO6gCXQIBEGEZYW8DAdIBXRtd2gEDAc0BbRltbwMBxwFpG2mvAQMBwgGqAR+qAXQDAZIBpgEhpgHOAQMBjAGwASGwAaMBAwGFAbUBIbUBfwIBf7wBIbwBhQECAWvAAR/JATECAXH4AS34AcMBAgFO/QEt/QGLAQIBSMQCNcQCswECATuLAjWLAssBAgE0kAI1kAKTAQIBLrICPbICvAECASGdAjudApABAgEamwLLAZsCsAICARmiAmSiAmoCARelAkGlAo8BAgERxwEjxwF4AgF4wwElwwHHAQIBcg==</sads:DebugSymbol.Symbol>
   </StateMachine>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
@@ -347,8 +402,16 @@
       <sap2010:ViewStateData Id="InputBoxActivity_1" sap:VirtualizedContainerService.HintSize="464,22.4" />
       <sap2010:ViewStateData Id="AddToCollection`1_10" sap:VirtualizedContainerService.HintSize="200,22.4" />
       <sap2010:ViewStateData Id="If_2" sap:VirtualizedContainerService.HintSize="464,212.8" />
-      <sap2010:ViewStateData Id="AssignToExtension_2" sap:VirtualizedContainerService.HintSize="464,22.4" />
-      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="486.4,524.8">
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="486.4,462.4">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ForEach`1_2" sap:VirtualizedContainerService.HintSize="516.8,612.8" />
+      <sap2010:ViewStateData Id="AssignToExtension_2" sap:VirtualizedContainerService.HintSize="516.8,22.4" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="539.2,800">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -381,7 +444,7 @@
       <sap2010:ViewStateData Id="FlowStep_2">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">230,562.4</av:Point>
+            <av:Point x:Key="ShapeLocation">130,562.4</av:Point>
             <av:Size x:Key="ShapeSize">200,22.4</av:Size>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
@@ -391,7 +454,7 @@
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <av:Point x:Key="ShapeLocation">130,490</av:Point>
             <av:Size x:Key="ShapeSize">200,22.4</av:Size>
-            <av:PointCollection x:Key="ConnectorLocation">230,512.4 230,542.4 330,542.4 330,562.4</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">230,512.4 230,562.4</av:PointCollection>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
@@ -443,7 +506,7 @@
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <av:Point x:Key="ShapeLocation">460,218.8</av:Point>
             <av:Size x:Key="ShapeSize">200,22.4</av:Size>
-            <av:PointCollection x:Key="ConnectorLocation">560,218.8 560,88.8 330,88.8 330,118.8</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">560,218.8 560,88.8 310,88.8 310,118.8</av:PointCollection>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
@@ -451,19 +514,19 @@
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-            <av:Point x:Key="ShapeLocation">295,191.2</av:Point>
+            <av:Point x:Key="ShapeLocation">274.8,186.4</av:Point>
             <av:Size x:Key="ShapeSize">70.4,87.2</av:Size>
-            <av:PointCollection x:Key="FalseConnector">365.4,234.8 395.4,234.8 395.4,230 460,230</av:PointCollection>
-            <av:PointCollection x:Key="TrueConnector">295,234.8 140,234.8 140,298.8</av:PointCollection>
+            <av:PointCollection x:Key="FalseConnector">345.2,230 460,230</av:PointCollection>
+            <av:PointCollection x:Key="TrueConnector">274.8,230 140,230 140,298.8</av:PointCollection>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="FlowStep_1">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">230,118.8</av:Point>
+            <av:Point x:Key="ShapeLocation">210,118.8</av:Point>
             <av:Size x:Key="ShapeSize">200,22.4</av:Size>
-            <av:PointCollection x:Key="ConnectorLocation">330,141.2 330,171.2 330.2,171.2 330.2,191.2</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">310,141.2 310,186.4</av:PointCollection>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
@@ -471,17 +534,25 @@
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-            <av:Point x:Key="ShapeLocation">270,2.5</av:Point>
+            <av:Point x:Key="ShapeLocation">140,2.4</av:Point>
             <av:Size x:Key="ShapeSize">60,75.2</av:Size>
-            <av:PointCollection x:Key="ConnectorLocation">300,77.7 300,107.7 330,107.7 330,118.8</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">170,77.6 170,107.6 310,107.6 310,118.8</av:PointCollection>
             <x:Double x:Key="Width">660</x:Double>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ForEach`1_3" sap:VirtualizedContainerService.HintSize="286.4,209.6" />
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="308.8,334.4">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="State_1" sap:VirtualizedContainerService.HintSize="113.6,60.8">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">43.2,439.6</av:Point>
+            <av:Point x:Key="ShapeLocation">553.2,439.6</av:Point>
             <av:Size x:Key="ShapeSize">113.6,60.8</av:Size>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
@@ -490,25 +561,27 @@
       <sap2010:ViewStateData Id="Transition_1">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:PointCollection x:Key="ConnectorLocation">106.4,362.4 106.4,392.4 100,392.4 100,439.6</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">392.4,310.4 392.4,340.4 610,340.4 610,439.6</av:PointCollection>
             <x:Int32 x:Key="SrcConnectionPointIndex">39</x:Int32>
             <x:Int32 x:Key="DestConnectionPointIndex">38</x:Int32>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="State_2" sap:VirtualizedContainerService.HintSize="326.4,476.8">
+      <sap2010:ViewStateData Id="State_2" sap:VirtualizedContainerService.HintSize="160,60.8">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">49.6,301.6</av:Point>
-            <av:Size x:Key="ShapeSize">113.6,60.8</av:Size>
+            <av:Point x:Key="ShapeLocation">313.2,249.6</av:Point>
+            <av:Size x:Key="ShapeSize">160,60.8</av:Size>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Double x:Key="StateContainerWidth">145.59999999999997</x:Double>
+            <x:Double x:Key="StateContainerHeight">25</x:Double>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
       <sap2010:ViewStateData Id="Transition_2" sap:VirtualizedContainerService.HintSize="430.4,515.2">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:PointCollection x:Key="ConnectorLocation">250,250.4 250,280.4 106.4,280.4 106.4,301.6</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">380,180.4 380,210.4 392.4,210.4 392.4,249.6</av:PointCollection>
             <x:Int32 x:Key="SrcConnectionPointIndex">39</x:Int32>
             <x:Int32 x:Key="DestConnectionPointIndex">38</x:Int32>
           </scg:Dictionary>
@@ -517,7 +590,7 @@
       <sap2010:ViewStateData Id="State_3" sap:VirtualizedContainerService.HintSize="113.6,60.8">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">193.2,189.6</av:Point>
+            <av:Point x:Key="ShapeLocation">323.2,119.6</av:Point>
             <av:Size x:Key="ShapeSize">113.6,60.8</av:Size>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
@@ -526,16 +599,16 @@
       <sap2010:ViewStateData Id="Transition_3" sap:VirtualizedContainerService.HintSize="430.4,515.2">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:PointCollection x:Key="ConnectorLocation">106.8,144 106.8,174 250,174 250,189.6</av:PointCollection>
-            <x:Int32 x:Key="SrcConnectionPointIndex">39</x:Int32>
+            <av:PointCollection x:Key="ConnectorLocation">126.8,156.4 156.8,156.4 156.8,89.6 380,89.6 380,119.6</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">44</x:Int32>
             <x:Int32 x:Key="DestConnectionPointIndex">38</x:Int32>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="State_4" sap:VirtualizedContainerService.HintSize="113.6,64">
+      <sap2010:ViewStateData Id="State_4" sap:VirtualizedContainerService.HintSize="542.4,1104">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <av:Point x:Key="ShapeLocation">50,80</av:Point>
+            <av:Point x:Key="ShapeLocation">13.2,118</av:Point>
             <av:Size x:Key="ShapeSize">113.6,64</av:Size>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
             <x:Double x:Key="StateContainerWidth">100</x:Double>
@@ -543,18 +616,18 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="StateMachine_1" sap:VirtualizedContainerService.HintSize="614.4,636.8">
+      <sap2010:ViewStateData Id="StateMachine_1" sap:VirtualizedContainerService.HintSize="900.8,636.8">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-            <av:Point x:Key="ShapeLocation">270,2.5</av:Point>
-            <x:Double x:Key="StateContainerWidth">600</x:Double>
+            <av:Point x:Key="ShapeLocation">70,2.4</av:Point>
+            <x:Double x:Key="StateContainerWidth">886.4</x:Double>
             <x:Double x:Key="StateContainerHeight">600</x:Double>
-            <av:PointCollection x:Key="ConnectorLocation">300,77.7 300,112 163.6,112</av:PointCollection>
+            <av:PointCollection x:Key="ConnectorLocation">73,77.6 73,107.6 70,107.6 70,118</av:PointCollection>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="WpfWithWF.TheWorkflow_1" sap:VirtualizedContainerService.HintSize="654.4,716.8" />
+      <sap2010:ViewStateData Id="WpfWithWF.TheWorkflow_1" sap:VirtualizedContainerService.HintSize="940.8,716.8" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>

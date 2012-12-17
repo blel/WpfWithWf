@@ -27,26 +27,20 @@ namespace WpfWithWF
     /// </summary>
     public partial class MainWindow : Window
     {
-
-
         AutoResetEvent idleEvent = new AutoResetEvent(false);
         WorkflowApplication workflow;
-
-        
-
         ObservableCollection<ApplicationData> _applicationData = new ObservableCollection<ApplicationData>();
+        WorkflowCommunicationExtension wce =
+            WorkflowCommunicationExtension.GetWorkflowCommunicationExtension();
 
         public ObservableCollection<ApplicationData> ApplicationData { get { return _applicationData; } }
         public MainWindow()
         {
-            
             InitializeComponent();
             this.grvApplications.ItemsSource = ApplicationData;
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, DeleteExecuted));
             txtProjectName.Focus();
-
-            
-
+            wce.OnPropertyChanged += wce_OnPropertyChanged;
         }
 
         private void DeleteExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -58,24 +52,29 @@ namespace WpfWithWF
         
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-
             ProjectInformation projectInfo = new ProjectInformation();
             projectInfo.ProjectName = this.txtProjectName.Text;
             projectInfo.ApplicationInfo = _applicationData.ToList<ApplicationData>();
-            System.Collections.Generic.Dictionary<string, object> workflowArgs = new System.Collections.Generic.Dictionary<string, object>();
+            System.Collections.Generic.Dictionary<string, object> workflowArgs = 
+                new System.Collections.Generic.Dictionary<string, object>();
             workflowArgs.Add("ProjectInfo", projectInfo);
-
-            
             workflow = new WorkflowApplication(new TheWorkflow(),workflowArgs);
             workflow.Completed = WorkflowCompletedCallback;
             workflow.Idle = WorkflowIdleCallback;
             workflow.Extensions.Add(new List<string>());
-
-
-
+            workflow.Extensions.Add(wce);
+            this.txbOutput.Text += "Starting planning phase...\r\n";
             workflow.Run();
-            
+        }
 
+        void wce_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string newValue = e.NewValue.ToString();
+            if (newValue != string.Empty)
+            {
+                this.txbOutput.Dispatcher.Invoke(() =>
+            this.txbOutput.Text += newValue + "\r\n");
+            }
         }
 
         private void WorkflowIdleCallback(WorkflowApplicationIdleEventArgs eArgs)
@@ -93,11 +92,6 @@ namespace WpfWithWF
                     }
                 });
             }
-            
-
-
-            
-
         }
 
 
@@ -115,7 +109,6 @@ namespace WpfWithWF
                     }
                 });
             }
-            
         }
 
 
@@ -128,23 +121,14 @@ namespace WpfWithWF
                     ApplicationName = txtApplicationName.Text,
                     NewApplication = chkNewApp.IsChecked == true ? "Yes" : "No"
                 });
-
             }
         }
 
-        private void lstNewApplications_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-
-        }
-
-        private void mniDelete_Click(object sender, RoutedEventArgs e)
-        {
-            //var q = lstNewApplications.SelectedItem;
-        }
 
         private void btnExectution_Click(object sender, RoutedEventArgs e)
         {
-            workflow.ResumeBookmark("Execution", "anything");
+             if (workflow.ResumeBookmark("Execution", null) == BookmarkResumptionResult.Success)
+                 this.txbOutput.Text += "Starting execution phase...\r\n";
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
@@ -154,12 +138,9 @@ namespace WpfWithWF
 
         private void btnPostCutover_Click(object sender, RoutedEventArgs e)
         {
-            workflow.ResumeBookmark("PostCutOver", null);
+            
+            if (workflow.ResumeBookmark("PostCutOver", null)== BookmarkResumptionResult.Success)
+                this.txbOutput.Text += "Starting Post Cut Over phase...\r\n";
         }
-
-
-
-  
-
     }
 }
