@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Activities;
-using System.Activities.Statements;
 using System.Activities.Tracking;
 
 
@@ -25,24 +13,39 @@ namespace WpfWithWF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        AutoResetEvent idleEvent = new AutoResetEvent(false);
-        WorkflowApplication workflow;
-        ObservableCollection<ApplicationData> _applicationData = new ObservableCollection<ApplicationData>();
-        WorkflowCommunicationExtension wce =
+        #region Fields
+        WorkflowApplication _workflow;
+        
+        readonly ObservableCollection<ApplicationData> _applicationData = new ObservableCollection<ApplicationData>();
+
+        readonly WorkflowCommunicationExtension _wce =
             WorkflowCommunicationExtension.GetWorkflowCommunicationExtension();
+        
+        #endregion
+
+        #region Properties
 
         public ObservableCollection<ApplicationData> ApplicationData { get { return _applicationData; } }
+        
+        #endregion
+
+        #region Constructor
+        
         public MainWindow()
         {
             InitializeComponent();
-            this.grvApplications.ItemsSource = ApplicationData;
+            grvApplications.ItemsSource = ApplicationData;
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, DeleteExecuted));
             txtProjectName.Focus();
-            wce.OnPropertyChanged += wce_OnPropertyChanged;
+            _wce.OnPropertyChanged += wce_OnPropertyChanged;
         }
+        
+        #endregion
 
+        #region Methods
+        
         private void DeleteExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             if (grvApplications.SelectedIndex>=0)
@@ -52,38 +55,48 @@ namespace WpfWithWF
         
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            ProjectInformation projectInfo = new ProjectInformation();
-            projectInfo.ProjectName = this.txtProjectName.Text;
-            projectInfo.ApplicationInfo = _applicationData.ToList<ApplicationData>();
-            System.Collections.Generic.Dictionary<string, object> workflowArgs = 
-                new System.Collections.Generic.Dictionary<string, object>();
-            workflowArgs.Add("ProjectInfo", projectInfo);
-            workflow = new WorkflowApplication(new TheWorkflow(),workflowArgs);
-            workflow.Completed = WorkflowCompletedCallback;
-            workflow.Idle = WorkflowIdleCallback;
-            workflow.Extensions.Add(new List<string>());
-            workflow.Extensions.Add(wce);
+            var projectInfo = new ProjectInformation
+            {
+                ProjectName = txtProjectName.Text,
+                ApplicationInfo = _applicationData.ToList()
+            };
+            var workflowArgs = 
+                new Dictionary<string, object> {{"ProjectInfo", projectInfo}};
+           
+            _workflow = new WorkflowApplication(new TheWorkflow(),workflowArgs)
+            {
+                Completed = WorkflowCompletedCallback,
+                Idle = WorkflowIdleCallback
+            };
+           
+            _workflow.Extensions.Add(new List<string>());
+            
+            _workflow.Extensions.Add(_wce);
 
-            EtwTrackingParticipant trackingParticipant = new EtwTrackingParticipant();
-            TrackingProfile trackingProfile = new TrackingProfile();
-            trackingProfile.Name = "SampleTrackingProfile";
-            trackingProfile.ActivityDefinitionId ="FIB-->FIS";
-            trackingProfile.Queries.Add(new WorkflowInstanceQuery (){States = {"*"}});
+            var trackingParticipant = new EtwTrackingParticipant();
+           
+            var trackingProfile = new TrackingProfile
+            {
+                Name = "SampleTrackingProfile",
+                ActivityDefinitionId = "FIB-->FIS"
+            };
+           
+            trackingProfile.Queries.Add(new WorkflowInstanceQuery {States = {"*"}});
+            
+            _workflow.Extensions.Add(trackingParticipant);
 
-
-            workflow.Extensions.Add(trackingParticipant);
-
-            this.txbOutput.Text += "Starting planning phase...\r\n";
-            workflow.Run();
+            txbOutput.Text += "Starting planning phase...\r\n";
+           
+            _workflow.Run();
         }
 
         void wce_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            string newValue = e.NewValue.ToString();
+            var newValue = e.NewValue.ToString();
             if (newValue != string.Empty)
             {
-                this.txbOutput.Dispatcher.Invoke(() =>
-            this.txbOutput.Text += newValue + "\r\n");
+                txbOutput.Dispatcher.Invoke(() =>
+            txbOutput.Text += newValue + "\r\n");
             }
         }
 
@@ -92,13 +105,14 @@ namespace WpfWithWF
             
             //idleEvent.Set();
             var output = eArgs.GetInstanceExtensions<List<string>>();
-            if (output.First() != null)
+            var enumerable = output as List<string>[] ?? output.ToArray();
+            if (enumerable.First() != null)
             {
-                this.txbOutput.Dispatcher.Invoke (() =>
+                txbOutput.Dispatcher.Invoke (() =>
                 {
-                    foreach (string item in output.First())
+                    foreach (var item in enumerable.First())
                     {
-                        this.txbOutput.Text += item + "\r\n";
+                        txbOutput.Text += item + "\r\n";
                     }
                 });
             }
@@ -109,13 +123,14 @@ namespace WpfWithWF
         private void WorkflowCompletedCallback(WorkflowApplicationCompletedEventArgs cArgs)
         {
             var output = cArgs.GetInstanceExtensions<List<string>>();
-            if (output.First() != null)
+            var enumerable = output as List<string>[] ?? output.ToArray();
+            if (enumerable.First() != null)
             {
-                this.txbOutput.Dispatcher.Invoke(() =>
+                txbOutput.Dispatcher.Invoke(() =>
                 {
-                    foreach (string item in output.First())
+                    foreach (string item in enumerable.First())
                     {
-                        this.txbOutput.Text += item + "\r\n";
+                        txbOutput.Text += item + "\r\n";
                     }
                 });
             }
@@ -126,7 +141,7 @@ namespace WpfWithWF
         {
             if (txtApplicationName.Text != string.Empty)
             {
-                _applicationData.Add(new ApplicationData()
+                _applicationData.Add(new ApplicationData
                 {
                     ApplicationName = txtApplicationName.Text,
                     NewApplication = chkNewApp.IsChecked == true ? "Yes" : "No"
@@ -137,20 +152,24 @@ namespace WpfWithWF
 
         private void btnExectution_Click(object sender, RoutedEventArgs e)
         {
-             if (workflow.ResumeBookmark("Execution", null) == BookmarkResumptionResult.Success)
-                 this.txbOutput.Text += "Starting execution phase...\r\n";
+             if (_workflow.ResumeBookmark("Execution", null) == BookmarkResumptionResult.Success)
+                 txbOutput.Text += "Starting execution phase...\r\n";
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
-            this.txbOutput.Text = string.Empty;
+            txbOutput.Text = string.Empty;
         }
 
         private void btnPostCutover_Click(object sender, RoutedEventArgs e)
         {
             
-            if (workflow.ResumeBookmark("PostCutOver", null)== BookmarkResumptionResult.Success)
-                this.txbOutput.Text += "Starting Post Cut Over phase...\r\n";
+            if (_workflow.ResumeBookmark("PostCutOver", value: null)== BookmarkResumptionResult.Success)
+                txbOutput.Text += "Starting Post Cut Over phase...\r\n";
         }
+
+
+        #endregion
+
     }
 }

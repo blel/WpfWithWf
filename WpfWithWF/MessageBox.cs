@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Activities;
+﻿using System.Activities;
 using System.Windows;
 
 namespace WpfWithWF
@@ -18,9 +14,9 @@ namespace WpfWithWF
         protected override void Execute(CodeActivityContext context)
         {
             // Obtain the runtime value of the Text input argument
-            string text = context.GetValue(this.Text);
+            var text = context.GetValue(Text);
             MessageBox.Show(text);
-            WorkflowCommunicationExtension wce =  context.GetExtension<WorkflowCommunicationExtension>();
+            var wce =  context.GetExtension<WorkflowCommunicationExtension>();
             wce.CommunicationContent = text;
             
         }
